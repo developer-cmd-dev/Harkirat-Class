@@ -1,4 +1,3 @@
-console.log("Hello this is node js server")
 import express from 'express'
 
 
