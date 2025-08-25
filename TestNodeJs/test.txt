@@ -1,0 +1,1 @@
+This is test file and it will give total count of words in cli interface;
