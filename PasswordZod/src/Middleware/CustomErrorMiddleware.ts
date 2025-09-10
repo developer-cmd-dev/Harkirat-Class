@@ -13,7 +13,7 @@ const CustomErrorMiddleware = async (err:Error,req:Request,res:Response,next:Nex
         if (err.errorObj){
             res.status(err.statusCode).json({statusCode:err.statusCode,message:err.message,errorObj:err.errorObj});
         }else{
-            res.set(err.statusCode).json({
+            res.status(err.statusCode).json({
                 statusCode:err.statusCode,
                 message:err.message,
             })
