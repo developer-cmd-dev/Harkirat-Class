@@ -8,9 +8,7 @@ import bcrypt from 'bcrypt'
 import * as z from 'zod';
 import CustomErrorMiddleware from "./Middleware/CustomErrorMiddleware.js";
 import CustomError from "./Exception/CustomError.js";
-import customError from "./Exception/CustomError.js";
 dotenv.config();
-
 
 const app = express();
 
@@ -27,7 +25,7 @@ const User = z.object({
 })
 
 
-const authmiddleware = async (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const parsedUser = z.safeParse(User,req.body);
 
     if (!parsedUser.success){
@@ -65,7 +63,7 @@ app.post('/api/v1/signup', async (req, res) => {
     res.status(200).json({ message: "Success", data: null });
 })
 
-app.use(authmiddleware).get('/api/v1/signin',(req,res)=>{
+app.use(authMiddleware).get('/api/v1/signin',(req,res)=>{
     console.log(req.body);
     res.set(200).json({message:"Signin success"});
 })
@@ -75,7 +73,8 @@ app.use(CustomErrorMiddleware);
 
 
 
-mongoose.connect("mongodb://localhost:27017/password_zod")
+// @ts-ignore
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
         console.log("Mongodb is connected!");
         app.listen(4000, () => console.log(`App is running on ${4000}`))
