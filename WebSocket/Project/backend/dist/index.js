@@ -1,9 +1,13 @@
 import { WebSocketServer, WebSocket } from "ws";
 const websocket = new WebSocketServer({ port: 4040 });
+let allSockets = [];
 websocket.on('connection', (socket) => {
-    console.log("Websocket connection connected");
+    console.log("Websocket connection Established");
+    allSockets.push(socket);
     socket.on("message", (data) => {
-        console.log(data.toString());
+        allSockets.forEach(socket => {
+            socket.send(data.toString());
+        });
     });
 });
 //# sourceMappingURL=index.js.map
