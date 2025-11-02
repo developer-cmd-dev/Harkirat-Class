@@ -18,8 +18,8 @@ app.post("/signup",async (req:Request,res:Response)=>{
         const insertUser = `INSERT INTO users (username,email,password) VALUES ('${username}','${email}','${password}')`;
 
         const response =await pgClient.query(insertUser);
-
-        res.json({message:"Sign up successfully"});
+        if(!response) res.json({success:false});
+        res.json({message:"Sign up successfully",data:response});
 })
 
 app.listen(3000,()=>console.log(`Server is running on port:${3000}`));

@@ -3,11 +3,22 @@ const websocket = new WebSocketServer({ port: 4040 });
 let allSockets = [];
 websocket.on('connection', (socket) => {
     console.log("Websocket connection Established");
-    allSockets.push(socket);
-    socket.on("message", (data) => {
-        allSockets.forEach(socket => {
-            socket.send(data.toString());
-        });
+    socket.on("message", (message) => {
+        const parsedMessage = JSON.parse(message);
+        if (parsedMessage.type === "join") {
+            allSockets.push({
+                socket: socket,
+                room: parsedMessage.payload.roomId,
+            });
+        }
+        if (parsedMessage.type === "chat") {
+            let currentUserRoom = allSockets.find((x) => x.socket == socket)?.room;
+            allSockets.map((x) => {
+                if (x.room == currentUserRoom) {
+                    socket.send(parsedMessage.payload.message);
+                }
+            });
+        }
     });
 });
 //# sourceMappingURL=index.js.map
