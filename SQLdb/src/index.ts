@@ -13,13 +13,30 @@ pgClient.connect().then(()=>console.log("DB Connected")).catch((error)=>console.
 
 
 app.post("/signup",async (req:Request,res:Response)=>{
-        const {username,email, password} = req.body;
+      try{
+          const {username,email, password,city,country} = req.body;
 
-        const insertUser = `INSERT INTO users (username,email,password) VALUES ('${username}','${email}','${password}')`;
+          const insertUser = `INSERT INTO users (username,email,password) VALUES ($1,$2,$3) RETURNING id;`;
 
-        const response =await pgClient.query(insertUser);
-        if(!response) res.json({success:false});
-        res.json({message:"Sign up successfully",data:response});
+          const insertAddress = `INSERT INTO address (city,country,user_id) VALUES ($1,$2,$3);`;
+
+
+          const insertUserResponse =await pgClient.query(insertUser,[username,email,password]);
+          const userId = insertUserResponse.rows[0].id;
+          console.log(userId);
+          const inserAddressResponse =await pgClient.query(insertAddress,[city,country,userId]);
+          console.log(inserAddressResponse.rows[0]);
+
+          res.json({message:"Sign up successfully"});
+      }catch (error){
+          console.error(error);
+          res.json({message:"Something went wrong"});
+      }
+})
+
+app.get("/metadata",async (req:Request,res:Response)=>{
+    const id = req.query.id;
+    const findAddress =
 })
 
 app.listen(3000,()=>console.log(`Server is running on port:${3000}`));
