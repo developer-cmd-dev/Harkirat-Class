@@ -9,7 +9,10 @@ app.use(express.json());
 
 const pgClient = new Client("postgresql://neondb_owner:npg_aAi8nbojG9JS@ep-bitter-sound-ads8ov60-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
 
-pgClient.connect().then(()=>console.log("DB Connected")).catch((error)=>console.log(error));
+pgClient.connect().then(()=> {
+    console.log("DB Connected")
+    app.listen(4001,()=>console.log(`Server is running on port:${4001}`));
+}).catch((error)=>console.log(error));
 
 
 app.post("/signup",async (req:Request,res:Response)=>{
@@ -34,9 +37,25 @@ app.post("/signup",async (req:Request,res:Response)=>{
       }
 })
 
-app.get("/metadata",async (req:Request,res:Response)=>{
-    const id = req.query.id;
-    const findAddress =
+app.get("/data",async (req:Request,res:Response)=>{
+   try{
+       const id = req.query.id;
+       const query1 =`SELECT * FROM users WHERE id=$1`;
+       const query2 =`SELECT * FROM address where user_id=$1`;
+
+       const getUser = await pgClient.query(query1,[id]);
+       const getAddress = await pgClient.query(query1,[id]);
+
+       res.json({
+           message:"success",
+           user:getUser.rows[0],
+           address:getAddress.rows[0],
+       });
+   }catch (error){
+       console.error(error);
+       res.json({message:"Something went wrong"});
+   }
+
+
 })
 
-app.listen(3000,()=>console.log(`Server is running on port:${3000}`));
