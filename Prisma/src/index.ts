@@ -39,10 +39,6 @@ try {
 
 
 })
-
-
-
-
 app.post("/createTodo/:id",async (req:Request,res:Response)=>{
     const {title,discription,completed}=req.body;
     const userId = req.params.id;
@@ -69,5 +65,13 @@ app.post("/createTodo/:id",async (req:Request,res:Response)=>{
       console.log(error)
   }
 
+})
+app.get("/users",async (req:Request,res:Response)=>{
+const response = await client.users.findMany({
+    include:{
+        todos:true
+    }
+});
+res.status(200).json(response)
 })
 

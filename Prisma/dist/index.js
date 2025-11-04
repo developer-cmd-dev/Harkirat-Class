@@ -45,4 +45,12 @@ app.post("/createTodo/:id", async (req, res) => {
         console.log(error);
     }
 });
+app.get("/users", async (req, res) => {
+    const response = await client.users.findMany({
+        include: {
+            todos: true
+        }
+    });
+    res.status(200).json(response);
+});
 //# sourceMappingURL=index.js.map
