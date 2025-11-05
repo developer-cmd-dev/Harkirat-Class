@@ -66,6 +66,7 @@ app.post("/createTodo/:id",async (req:Request,res:Response)=>{
   }
 
 })
+
 app.get("/users",async (req:Request,res:Response)=>{
 const response = await client.users.findMany({
     include:{
