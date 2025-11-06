@@ -20,9 +20,13 @@ export async function POST(req:NextRequest,res:NextResponse) {
     return NextResponse.json({
         message:"success",
         data:response
-    })
+    },{status:200})
    }catch(error){
     console.log(error)
-    return;
+    return NextResponse.json({
+        message:"Failed",
+    },{
+        status:404
+    })
    }
 }
